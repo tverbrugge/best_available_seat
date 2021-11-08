@@ -1,11 +1,11 @@
 class SeatAvailabilityMatrix
-  def initialize(num_rows, num_columns)
+  def initialize(venue)
   end
 
-  def mark_seat_available(row, column)
-    puts score_matrix.inspect
-    score_matrix[row - 1][column - 1]
-  end
 
-  private
+  def create_availability_matrix(venue)
+    venue.map_seat_matrix do |seat|
+      seat.available?
+    end
+  end
 end

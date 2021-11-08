@@ -19,6 +19,10 @@ class Seat
     @status = AVAILABLE
   end
 
+  def row_number
+    row.ord - 'a'.ord
+  end
+
   def to_s
     "#{id} - #{status}"
   end

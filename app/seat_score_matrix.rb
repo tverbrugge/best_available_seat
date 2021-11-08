@@ -1,26 +1,28 @@
-class SeatScoreMatrix
-  def initialize(num_rows, num_columns)
-    @num_rows = num_rows
-    @num_columns = num_columns
+require_relative 'helpers/matrix_builder'
 
-    @score_matrix = initialize_matrix(num_rows, num_columns)
+class SeatScoreMatrix
+  def initialize(venue)
+    @score_matrix = initialize_matrix(venue.number_of_rows, venue.seats_per_row)
   end
 
-  def score_at(row, column)
-    score_matrix[row - 1][column - 1]
+  def score_at(row, seat)
+    score_matrix[row - 1][seat - 1]
+  end
+
+  def score_for(seat)
+    score_matrix[seat.row_number][(seat.seat).to_i - 1]
   end
 
   private
 
   def initialize_matrix(num_rows, num_columns)
-    center_column = (num_columns / 2) + 1
-    (1..num_rows).map do |row|
-      (1..num_columns).map do |column|
-        column_factor = center_column - ((center_column - column).abs + 1)
-        row_factor = num_rows - row
+    center_column = (num_columns / 2)
 
-        column_factor + row_factor
-      end
+    MatrixBuilder.build_matrix(num_rows, num_columns) do |row, column|
+      column_factor = center_column - ((center_column - column).abs + 1)
+      row_factor = num_rows - row
+
+      column_factor + row_factor
     end
   end
 

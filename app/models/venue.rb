@@ -1,10 +1,11 @@
 require_relative 'seat'
+require_relative '../helpers/matrix_builder'
 
 class Venue
   def initialize(number_of_rows, seats_per_row)
     @number_of_rows = number_of_rows
     @seats_per_row = seats_per_row
-    @matrix = initialize_matrix(number_of_rows, seats_per_row)
+    @matrix = initialize_matrix
   end
 
   def mark_seat_as_available(seat_id)
@@ -21,10 +22,10 @@ class Venue
     nil
   end
 
-  def create_availability_matrix
-    score_matrix = SeatScoreMatrix.new(number_of_rows, seats_per_row)
-    matrix.map.with_index do |row, rowIdx|
-      row.map.with_index do |seat, seatIdx|
+  def map_seat_matrix
+    matrix.map do |row|
+      row.map do |seat|
+        yield(seat)
       end
     end
   end
@@ -35,18 +36,15 @@ class Venue
     end
   end
 
+  attr_reader :number_of_rows, :seats_per_row, :matrix
+
   private
 
-  attr_reader :matrix, :number_of_rows, :seats_per_row
-
-  def initialize_matrix(number_of_rows, seats_per_row)
-    # Array.new(number_of_rows) { Array.new(seats_per_row, Seat.new) }
-    (0...number_of_rows).map do |row|
-      (0...seats_per_row).map do |column|
-        row_value = ('a'.ord + row).chr
-        column_value = (column + 1).to_s
-        Seat.new("#{row_value}#{column_value}", row_value, column_value)
-      end
+  def initialize_matrix
+    MatrixBuilder.build_matrix(number_of_rows, seats_per_row) do |row, column|
+      row_value = ('a'.ord + row).chr
+      column_value = (column + 1).to_s
+      Seat.new("#{row_value}#{column_value}", row_value, column_value)
     end
   end
 end
