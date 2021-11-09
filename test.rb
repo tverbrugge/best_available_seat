@@ -42,18 +42,7 @@ input = {
 
 class Main
   def initialize(raw_data)
-    @raw_data = raw_data
-    venue_layout = raw_data[:venue][:layout]
-    rows = venue_layout[:rows]
-    columns = venue_layout[:columns]
-
-    @venue = Venue.new(rows, columns)
-    @scoring_matrix = SeatScoreMatrix.new(venue)
-
-    raw_data[:seats].values.each do |seat_hash|
-      venue.mark_seat_as_available(seat_hash[:id])
-    end
-
+    @venue = Venue.from_hash(raw_data)
   end
 
   def find_best_seat_for(number_of_tickets)

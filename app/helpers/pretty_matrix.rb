@@ -1,5 +1,5 @@
 class PrettyMatrix
-  def self.to_s(matrix)
+  def self.pretty_print(matrix)
     matrix.map do |row|
       row.map do |seat|
         if block_given?

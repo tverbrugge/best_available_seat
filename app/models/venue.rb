@@ -2,6 +2,20 @@ require_relative 'seat'
 require_relative '../helpers/matrix_builder'
 
 class Venue
+  def self.from_hash(data_hash)
+    venue_layout = data_hash[:venue][:layout]
+    rows = venue_layout[:rows]
+    columns = venue_layout[:columns]
+
+    venue = new(rows, columns)
+
+    data_hash[:seats].values.each do |seat_hash|
+      venue.mark_seat_as_available(seat_hash[:id])
+    end
+
+    venue
+  end
+
   def initialize(number_of_rows, seats_per_row)
     @number_of_rows = number_of_rows
     @seats_per_row = seats_per_row
