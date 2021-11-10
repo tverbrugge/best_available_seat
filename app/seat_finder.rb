@@ -23,7 +23,7 @@ class SeatFinder
   end
 
   def find_seat_sets(number_of_tickets)
-    row_seat_finder_algorithm = Algorithms::Consecutive.new(number_of_tickets)
+    row_seat_finder_algorithm = create_algorithm(number_of_tickets)
     seat_sets = venue.matrix.flat_map do |row|
       seat_sets_in_row = row_seat_finder_algorithm.find_in_row(row)
 
@@ -35,6 +35,13 @@ class SeatFinder
 
   private
 
+  attr_reader :venue, :availability_matrix, :score_matrix
+
+  def create_algorithm(number_of_tickets)
+    # Algorithms::Consecutive.new(number_of_tickets)
+    Algorithms::GrepStyle.new(number_of_tickets)
+  end
+
   def create_seat_sets(seat_sets_in_row)
     seat_sets_in_row.map do |seat_set|
       total_score = seat_set.inject(0) { |accum, seat| accum + score_matrix.score_for(seat) }
@@ -42,8 +49,6 @@ class SeatFinder
       SeatSet.new(seat_set, total_score)
     end
   end
-
-  attr_reader :venue, :availability_matrix, :score_matrix
 
   def create_availability_matrix(venue)
     venue.map_seat_matrix do |seat|

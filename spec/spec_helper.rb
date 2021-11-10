@@ -7,6 +7,13 @@ def generate_seats(row, columns)
   MatrixBuilder.build_matrix(row, columns) do |row, column|
     row_value = ('a'.ord + row).chr
     column_value = (column + 1).to_s
-    Seat.new("#{row_value}#{column_value}", row_value, column_value)
+
+    seat_status = Seat::SOLD
+
+    if block_given?
+      seat_status = yield(row, column) || Seat::SOLD
+    end
+
+    Seat.new("#{row_value}#{column_value}", row_value, column_value, seat_status)
   end
 end
