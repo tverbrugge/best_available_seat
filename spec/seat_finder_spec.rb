@@ -10,10 +10,10 @@ describe SeatFinder do
 
       memo.merge({
         seat_key.to_sym => {
-          id: seat_key,
-          row: matches[1],
-          column: matches[2].to_i,
-          status: 'AVAILABLE',
+          'id' => seat_key,
+          'row' => matches[1],
+          'column' => matches[2].to_i,
+          'status' => 'AVAILABLE',
         }
       })
     end
@@ -21,13 +21,13 @@ describe SeatFinder do
 
   def create_sample_data(rows, columns, available_seats)
     {
-      venue: {
-        layout: {
-          rows: rows,
-          columns: columns
+      'venue' => {
+        'layout' => {
+          'rows' => rows,
+          'columns' => columns
         }
       },
-      seats: generate_seats_data(available_seats)
+      'seats' => generate_seats_data(available_seats)
     }
   end
 

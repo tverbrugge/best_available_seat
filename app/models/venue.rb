@@ -3,14 +3,14 @@ require_relative '../helpers/matrix_builder'
 
 class Venue
   def self.from_hash(data_hash)
-    venue_layout = data_hash[:venue][:layout]
-    rows = venue_layout[:rows]
-    columns = venue_layout[:columns]
+    venue_layout = data_hash['venue']['layout']
+    rows = venue_layout['rows']
+    columns = venue_layout['columns']
 
     venue = new(rows, columns)
 
-    data_hash[:seats].values.each do |seat_hash|
-      venue.mark_seat_as_available(seat_hash[:id])
+    data_hash['seats'].values.each do |seat_hash|
+      venue.mark_seat_as_available(seat_hash['id'])
     end
 
     venue

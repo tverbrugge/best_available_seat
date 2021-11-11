@@ -1,6 +1,8 @@
 require_relative 'app/seat_score_matrix'
 require_relative 'app/models/venue'
 require_relative 'app/seat_finder'
+require 'optparse'
+require 'json'
 
 def generate_seats_data
   %w[a1 b5 h7 h8 a25 a24 a6 a7 h48 h49 h50].inject({}) do |memo, seat_key|
@@ -25,18 +27,6 @@ input = {
     }
   },
   "seats": {
-    "a1": {
-      "id": "a1",
-      "row": "a",
-      "column": 1,
-      "status": "AVAILABLE"
-    },
-    "b5": {
-      "id": "b5",
-      "row": "b",
-      "column": 5,
-      "status": "AVAILABLE"
-    },
   }.merge(generate_seats_data)
 }
 
@@ -56,5 +46,31 @@ class Main
   attr_reader :raw_data, :scoring_matrix, :venue
 end
 
-main = Main.new(input)
-puts main.find_best_seat_for(2)
+def options_parser
+  @options_parser ||= OptionParser.new do |opts|
+    opts.banner = "Usage: #{__FILE__ } [options]"
+    opts.on('-iFILE', '--init FILE', String, 'The input file')
+    opts.on('-nNUM_SEATS', '--num-seats NUM_SEATS', Integer, 'The number of seats requested')
+  end
+end
+
+def parse_options
+  options = {}
+  options_parser.parse!(into: options)
+  options.delete(:cibd)
+
+  options
+end
+
+options_parser.parse %w[--help] if ARGV.empty?
+
+parsed_options = parse_options
+
+json_input = File.read(parsed_options[:init])
+num_seats = parsed_options[:"num-seats"]
+
+puts JSON.parse(json_input).inspect
+
+main = Main.new(JSON.parse(json_input))
+
+puts main.find_best_seat_for(num_seats)
