@@ -69,8 +69,6 @@ parsed_options = parse_options
 json_input = File.read(parsed_options[:init])
 num_seats = parsed_options[:"num-seats"]
 
-puts JSON.parse(json_input).inspect
-
 main = Main.new(JSON.parse(json_input))
 
 puts main.find_best_seat_for(num_seats)
